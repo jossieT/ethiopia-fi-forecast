@@ -1,0 +1,24 @@
+field,code,description
+pillar,ACCESS,Access to financial services
+pillar,USAGE,Usage of financial services
+pillar,GENDER,Gender equality in finance
+pillar,AFFORDABILITY,Cost of services
+pillar,QUALITY,Quality of services
+pillar,TRUST,Trust in system
+pillar,DEPTH,Depth of financial usage
+category,policy,Government Policy
+category,product_launch,Product Launch
+category,infrastructure,Infrastructure
+category,market_entry,Market Entry
+category,milestone,Milestone
+unit_type,percentage,Percentage
+unit_type,count,Count
+unit_type,currency_etb,Ethiopian Birr
+unit_type,ratio,Ratio
+impact_direction,increase,Increases indicator
+impact_direction,decrease,Decreases indicator
+impact_direction,neutral,No clear direction
+indicator_code,ACC_OWNERSHIP,Account Ownership
+indicator_code,USG_TELEBIRR_USERS,Telebirr Users
+indicator_code,USG_MPESA_USERS,M-Pesa Users
+indicator_code,ACC_4G_COV,4G Coverage
