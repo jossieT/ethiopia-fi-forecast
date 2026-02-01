@@ -1,35 +1,48 @@
 # Task 2: Exploratory Data Analysis & Key Insights
 
-## Data Quality Assessment
+## Executive Summary
 
-- **Temporal Coverage**: Sparse data points (2014, 2017, 2021, 2024 for Findex). High-frequency measurement (annual/daily) is available only for operational metrics like Telebirr and EthSwitch data starting ~2021.
-- **Gaps**: Missing specific "Active User" data for banks comparable to mobile money. Gender disaggregation is only consistently available for Account Ownership.
-- **Confidence**: High confidence in Findex and Operator reports; Medium confidence in derived 2024/2025 estimates.
+This report summarizes the findings from the exploratory data analysis of Ethiopia's financial inclusion landscape (2014-2025). The analysis highlights a critical market shift: while access growth has plateaued, usage of digital rails is exploding.
+
+## Data Limitations
+
+A transparent accounting of data constraints is essential for interpreting these findings:
+
+1.  **Sparse Time Series**: Core "Access" data (Global Findex) is only available for 4 time points (2014, 2017, 2021, 2024), limiting our ability to model year-to-year volatility or precise event attribution.
+2.  **Proxy Reliance**: Annual operational data (Telebirr/EthSwitch) is used as a proxy for holistic inclusion, but may overrepresent urban/connected populations compared to national surveys.
+3.  **Disaggregation Gaps**: We lack consistent gender-disaggregated data for _usage_ (transaction volumes), limiting our view of the gender gap to _access_ (account ownership) only.
+4.  **Inconsistent Definitions**: "Active" users are defined differently across operators (90-day vs 30-day), requiring normalization which introduces uncertainty.
+5.  **Sampling vs. Administrative Bias**: Global Findex is based on a representative sample (~1,000 adults) subject to sampling error, whereas Telebirr/EthSwitch data are administrative population counts. Discrepancies may arise from this methodological difference.
 
 ## Key Insights
 
-### 1. The "Access-Usage Paradox"
+### 1. The "Access-Usage Paradox" (See Notebook Section 3)
 
-While **Account Ownership** slowed significantly (growing only +3pp from 46% in 2021 to 49% in 2024), **Usage** exploded. P2P transaction volumes grew ~158% YoY in 2024/25. This suggests the market has shifted from "acquiring new users" to "deepening usage among existing users." The saturation point for "easy" access may have been reached, and future growth will require reaching harder segments (rural/unbanked).
+**Observation**: Account ownership growth has decelerated significantly, rising only **3 percentage points** (46% to 49%) between 2021 and 2024. In stark contrast, digital transaction volumes have surged.
+**Implication**: The "easy to reach" population is already banked. Future access growth requires targeting harder-to-reach rural segments, while current growth is driven by deepening engagement among existing users.
 
-### 2. Infrastructure as a Leading Indicator
+### 2. Infrastructure as a Leading Indicator (See Notebook Section 5)
 
-4G Population Coverage doubled from 37.5% to 70.8% (2023-2025). Historically, connectivity improvements lead financial service adoption by 12-18 months. This massive infrastructure upgrade predicts a delayed but significant jump in digital financial service adoption in 2025-2026, especially in rural areas previously uncovered.
+**Observation**: 4G Population coverage doubled from **37.5% (2023)** to **70.8% (2025)**.
+**Implication**: Historically, connectivity improvements lead financial adoption by 12-18 months. This massive infrastructure upgrade serves as a strong predictor for a delayed spike in digital financial adoption in the 2026-2027 forecast period.
 
-### 3. The Digital Substitution Tipping Point
+### 3. The Digital Substitution Tipping Point (See Notebook Section 4)
 
-For the first time in FY2024/25, **P2P transaction counts (128M) surpassed ATM withdrawals (119M)**, with a ratio of 1.08. This is a historic milestone indicating that digital transfers are replacing cash as the primary mechanism for value movement for connected users.
+**Observation**: In FY2024/25, **P2P transaction counts (128M)** surpassed **ATM withdrawals (119M)** for the first time (Ratio: 1.08).
+**Implication**: This is a historic milestone confirming that digital transfers have replaced cash as the primary value movement mechanism for the connected population.
 
-### 4. Gender Gap Persistence
+### 4. The Stubborn Gender Gap (See Notebook Section 4)
 
-The gender gap in account ownership remains stubbornly high at ~20 percentage points (56% Male vs 36% Female in 2021). Despite the "democratizing" promise of mobile money, women only hold 14% of mobile money accounts (Source: NBE/Shega). This indicates that structural barriers (ID, phone ownership which has a 24% gap) are preventing women from accessing the new digital rails.
+**Observation**: The gender gap in account ownership remains high at **~20 percentage points** (56% Male vs 36% Female). Furthermore, women hold only **14%** of mobile money accounts.
+**Implication**: Digital channels are not automatically closing the gender gap; structural barriers (ID, handset ownership) persist and require targeted policy interventions.
 
-### 5. Policy Impact Lag
+### 5. Policy Impact Lag (See Notebook Section 2)
 
-The launch of Telebirr (May 2021) did not immediately spike _unique_ account ownership in the 2021 Findex data (collected mid-year). However, the "Telebirr Effect" is clearly visible in the 2024 active user numbers (54M+). The lag between "product launch" and "measured Findex impact" is approximately 2-3 years, suggesting the full impact of the 2023 M-Pesa entry and 2025 Foreign Bank entry will likely be captured in the 2027 Findex survey, not 2024.
+**Observation**: The launch of Telebirr (May 2021) did not immediately spike unique account ownership in 2021/2022 data. However, the operational impact is now evident in 2024/25 active user counts (54M+).
+**Implication**: Major events (like the 2025 Foreign Bank entry) will likely have a **2-3 year lag** before reflecting in national inclusion statistics.
 
-## Hypotheses for Modeling (Task 3)
+## Hypotheses for Task 3 Modeling
 
-1.  **Usage** is now decoupled from **Access** and should be modeled as a function of _Product Events_ (Telebirr/M-Pesa) rather than population growth.
-2.  **Access** growth is now constrained by **Infrastructure** (4G/ID) and **Gender** barriers. Future growth equals "Rural 4G Expansion" + "Fayda ID Rollout".
-3.  **Foreign Bank Entry (2025)** will primarily impact **Quality** and **Depth** (credit/savings) rather than basic Access.
+- **H1**: Usage forecast should be modeled independently of Access, driven by _Product Events_.
+- **H2**: Access forecast should use _Infrastructure (4G)_ and _ID Enrollment_ as primary regressors.
+- **H3**: The 2025 Foreign Bank Entry will primarily impact _Service Quality_ and _Depth_, not immediate Access numbers.
