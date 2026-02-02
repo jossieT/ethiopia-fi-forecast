@@ -84,6 +84,10 @@ def load_data(
     for col in date_cols:
         if col in df_unified.columns:
             df_unified[col] = pd.to_datetime(df_unified[col], errors='coerce')
+    
+    # Derive data_year from observation_date if missing
+    if 'observation_date' in df_unified.columns and 'data_year' in df_unified.columns:
+        df_unified['data_year'] = df_unified['data_year'].fillna(df_unified['observation_date'].dt.year)
             
     return df_unified
 
