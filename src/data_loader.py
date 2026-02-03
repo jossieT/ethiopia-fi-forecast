@@ -88,16 +88,30 @@ def load_data(
     # Derive data_year from observation_date if missing
     if 'observation_date' in df_unified.columns and 'data_year' in df_unified.columns:
         df_unified['data_year'] = df_unified['data_year'].fillna(df_unified['observation_date'].dt.year)
-            
-    return df_unified
+    
+    # 4. Load Impact Sheet
+    print("Loading Impact Sheet...")
+    try:
+        if target_sheet:
+             # If we identified a target sheet earlier, we assume impact sheet is in same file
+             df_impact = pd.read_excel(data_path, sheet_name='Impact_sheet')
+        else:
+             df_impact = pd.read_excel(data_path, sheet_name='Impact_sheet')
+             
+        print(f"Loaded {len(df_impact)} impact links.")
+    except Exception as e:
+        print(f"Warning: Could not load Impact_sheet. Error: {e}")
+        df_impact = pd.DataFrame() # Return empty if fail
+
+    return df_unified, df_impact
 
 if __name__ == "__main__":
     # Test
     try:
-        df = load_data()
+        df, df_impact = load_data()
         print("Success! Data Head:")
         print(df[['record_id', 'record_type', 'pillar', 'indicator']].head())
-        print("Success! Enrichment Check (New Records):")
-        print(df[df['record_id'].str.contains('NEW', na=False)][['record_id', 'indicator']])
+        print("Success! Impact Head:")
+        print(df_impact[['record_id', 'parent_id', 'impact_direction']].head())
     except Exception as e:
         print(f"Error: {e}")
