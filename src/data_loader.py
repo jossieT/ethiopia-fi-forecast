@@ -1,10 +1,24 @@
 import pandas as pd
 import os
+try:
+    import streamlit as st
+except ImportError:
+    st = None
+
 
 def load_data(
-    data_path=r"data/raw/ethiopia_fi_unified_data.xlsx",
+    data_path="data/raw/ethiopia_fi_unified_data.xlsx",
     enrichment_path=None # Optional, derived from Task 1 logs
 ):
+    if st:
+        return _load_data_cached(data_path, enrichment_path)
+    return _load_data_logic(data_path, enrichment_path)
+
+def _load_data_cached(data_path, enrichment_path):
+    return st.cache_data(_load_data_logic)(data_path, enrichment_path)
+
+def _load_data_logic(data_path, enrichment_path):
+
     """
     Loads the official XLSX dataset and appends the enrichment data found in Task 1.
     """

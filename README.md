@@ -5,43 +5,49 @@
 **Don't force interpretation onto data.**
 
 The previous version made a mistake: it assigned events to pillars (e.g., "Telebirr Launch" → USAGE). This is **biased** because:
+
 - Telebirr affects both ACCESS and USAGE
 - Fayda affects ACCESS, GENDER, and TRUST
 - The pillar assignment is an **interpretation**, not a fact
 
 ## The Correct Approach
 
-| Record Type | `category` column | `pillar` column |
-|-------------|-------------------|-----------------|
-| `observation` | (empty) | **YES** - what dimension is measured |
-| `target` | (empty) | **YES** - what dimension is the goal |
-| `event` | **Event type** (policy, product_launch, etc.) | **(empty)** - no pre-assignment |
-| `impact_link` | (empty) | **YES** - pillar of the affected indicator |
+| Record Type   | `category` column                             | `pillar` column                            |
+| ------------- | --------------------------------------------- | ------------------------------------------ |
+| `observation` | (empty)                                       | **YES** - what dimension is measured       |
+| `target`      | (empty)                                       | **YES** - what dimension is the goal       |
+| `event`       | **Event type** (policy, product_launch, etc.) | **(empty)** - no pre-assignment            |
+| `impact_link` | (empty)                                       | **YES** - pillar of the affected indicator |
 
 ---
 
 ## How It Works
 
 ### Events are neutral
+
 ```csv
 EVT_0001,,event,product_launch,,Telebirr Launch,...
 ```
+
 - `category` = what type of event (product_launch)
 - `pillar` = empty (no pre-interpretation)
 
 ### Impact links capture effects
+
 ```csv
 IMP_0001,EVT_0001,impact_link,,ACCESS,...,ACC_OWNERSHIP,direct,increase,high,15,12,...
 IMP_0003,EVT_0001,impact_link,,USAGE,...,USG_P2P_COUNT,direct,increase,high,25,6,...
 ```
+
 - One event → multiple impact_links
 - Each impact_link has a pillar (derived from the affected indicator)
 
 ### Query: "What affects ACCESS?"
+
 ```python
 # Get all impact_links that affect ACCESS indicators
 access_impacts = df[
-    (df['record_type'] == 'impact_link') & 
+    (df['record_type'] == 'impact_link') &
     (df['pillar'] == 'ACCESS')
 ]
 
@@ -57,37 +63,38 @@ access_events = access_impacts.merge(
 
 ## Event Categories
 
-| category | Description | Examples |
-|----------|-------------|----------|
-| `product_launch` | New product/service | Telebirr, M-Pesa |
-| `market_entry` | New competitor | Safaricom Ethiopia |
-| `policy` | Government strategy | NFIS-II |
-| `regulation` | Regulatory directive | KYC rules |
-| `infrastructure` | System deployment | Fayda, EthioPay |
-| `partnership` | Integration | M-Pesa + EthSwitch |
-| `milestone` | Achievement | P2P > ATM |
-| `economic` | Macro shock | FX reform |
-| `pricing` | Price change | Safaricom rate hike |
+| category         | Description          | Examples            |
+| ---------------- | -------------------- | ------------------- |
+| `product_launch` | New product/service  | Telebirr, M-Pesa    |
+| `market_entry`   | New competitor       | Safaricom Ethiopia  |
+| `policy`         | Government strategy  | NFIS-II             |
+| `regulation`     | Regulatory directive | KYC rules           |
+| `infrastructure` | System deployment    | Fayda, EthioPay     |
+| `partnership`    | Integration          | M-Pesa + EthSwitch  |
+| `milestone`      | Achievement          | P2P > ATM           |
+| `economic`       | Macro shock          | FX reform           |
+| `pricing`        | Price change         | Safaricom rate hike |
 
 ---
 
 ## Pillar Definitions (for observations only)
 
-| pillar | Measures |
-|--------|----------|
-| `ACCESS` | Can people reach services? |
-| `USAGE` | Are people using services? |
-| `AFFORDABILITY` | Can people afford services? |
-| `GENDER` | Gender gaps |
-| `QUALITY` | Do services work reliably? |
-| `TRUST` | Do people trust the system? |
-| `DEPTH` | Beyond payments (savings, credit)? |
+| pillar          | Measures                           |
+| --------------- | ---------------------------------- |
+| `ACCESS`        | Can people reach services?         |
+| `USAGE`         | Are people using services?         |
+| `AFFORDABILITY` | Can people afford services?        |
+| `GENDER`        | Gender gaps                        |
+| `QUALITY`       | Do services work reliably?         |
+| `TRUST`         | Do people trust the system?        |
+| `DEPTH`         | Beyond payments (savings, credit)? |
 
 ---
 
 ## Building the Models
 
 ### ACCESS Model
+
 ```python
 # Target: ACCESS observations
 Y = df[(df['record_type'] == 'observation') & (df['pillar'] == 'ACCESS')]
@@ -100,6 +107,7 @@ events = df[df['record_type'] == 'event']
 ```
 
 ### USAGE Model
+
 ```python
 # Target: USAGE observations
 Y = df[(df['record_type'] == 'observation') & (df['pillar'] == 'USAGE')]
@@ -113,6 +121,7 @@ usage_impacts = df[(df['record_type'] == 'impact_link') & (df['pillar'] == 'USAG
 ## Data Entry Rules
 
 ### Adding an observation
+
 ```
 record_type: observation
 category: (leave empty)
@@ -121,6 +130,7 @@ indicator_code: ACC_OWNERSHIP, USG_P2P_COUNT, etc.
 ```
 
 ### Adding an event
+
 ```
 record_type: event
 category: product_launch, policy, infrastructure, etc.
@@ -129,6 +139,7 @@ indicator: Event name
 ```
 
 ### Adding an impact link
+
 ```
 record_type: impact_link
 parent_id: The event ID (EVT_XXXX)
@@ -141,8 +152,32 @@ related_indicator: The indicator code being affected
 
 ## Files
 
-| File | Purpose |
-|------|---------|
-| `ethiopia_fi_unified_data.csv` | The data (56 records) |
-| `reference_codes.csv` | Valid codes for each field |
-| `SCHEMA_DESIGN.md` | Detailed schema documentation |
+| File                           | Purpose                       |
+| ------------------------------ | ----------------------------- |
+| `ethiopia_fi_unified_data.csv` | The data (56 records)         |
+| `reference_codes.csv`          | Valid codes for each field    |
+| `SCHEMA_DESIGN.md`             | Detailed schema documentation |
+
+---
+
+## Interactive Dashboard
+
+The project includes an interactive Streamlit dashboard for data exploration and forecast visualization.
+
+### How to Run
+
+1. Ensure you have the dependencies installed:
+   ```bash
+   pip install streamlit plotly pandas
+   ```
+2. Run the application from the project root:
+   ```bash
+   streamlit run dashboard/app.py
+   ```
+
+### Dashboard Sections
+
+- **Overview**: High-level summary of current status.
+- **Trends Explorer**: Detailed historical data analysis.
+- **Forecast Analysis**: Scenario-based projections (Base, Optimistic, Pessimistic).
+- **Inclusion Targets**: Progress tracker toward the 60% access goal.
